@@ -4,6 +4,8 @@
 
 import pandas as pd
 
+import matplotlib.pyplot as plt # A libraray for excel of bar and charts
+
 # This will Load the raw data from the spreadsheet calles exam.xlsx and store it in a DataFrame called exam. The DataFrame is a two-dimensional data structure that can hold data of different types (e.g., integers, strings, floats) and is similar to a table in a database or an Excel spreadsheet.
 
 exam = pd.read_excel('exam.xlsx')
@@ -31,6 +33,78 @@ sortexam['Percentage'] = (sortexam['Points'] / sortexam['Max Marks']) * 100
 sortexam['Grade'] = sortexam['Points'].apply(get_student_grade)
 print(sortexam)
 
+print("--------------------------")
+
+# # ==========================================
+# # NEW FEATURE: GENERATING A GRADE CHART Bar Chart📊
+# # ==========================================
+
+# # Count how many students got each grade (e.g., A+: 3, B: 5)
+# # .value_counts() groups identical items together and counts them
+# grade_counts = sortexam['Grade'].value_counts()
+
+# # Create a new figure/window for the chart
+# plt.figure(figsize=(8, 5))
+
+# # Build a bar chart using the grades as labels and counts as the height
+# plt.bar(grade_counts.index, grade_counts.values, color='skyblue', edgecolor='black')
+
+# # Add titles and labels to read it easily
+# plt.title('Distribution of Student Grades', fontsize=14, fontweight='bold')
+# plt.xlabel('Letter Grades', fontsize=12)
+# plt.ylabel('Number of Students', fontsize=12)
+
+# # Save the visual chart as a PNG image inside your folder
+# plt.savefig('grade_distribution.png', dpi=300)
+
+# # Clean up the chart memory
+# plt.close()
+
+# print("🎉 Success! Chart saved as 'grade_distribution.png'")
+# print("--------------------------")
+
+# ==========================================
+# NEW FEATURE: GENERATING A PIE CHART 🍕
+# ==========================================
+
+# 1. Count how many students got each grade
+grade_counts = sortexam['Grade'].value_counts()
+
+# 2. Define a custom color map matching your rules
+# Green for top grades, red for failing, distinct colors for the rest
+color_map = {
+    'A+': '#27ae60',   # Darker Green
+    'A': '#2ecc71',  # Bright Green
+    'B': '#3498db',   # Blue
+    'C': '#f1c40f',   # Yellow
+    'D': '#e67e22',   # Orange
+    'F': '#e74c3c'    # Bright Red
+}
+
+# Match the colors dynamically to whatever grades exist in your data
+custom_colors = [color_map[grade] for grade in grade_counts.index]
+
+# 3. Create the pie chart canvas
+plt.figure(figsize=(7, 7))  # Equilateral size keeps the circle perfectly round
+
+# 4. Plot the pie chart
+plt.pie(
+    grade_counts.values,          # The data counts
+    labels=grade_counts.index,    # Grade letters on the outside
+    colors=custom_colors,         # Your custom green/red color scheme
+    autopct='%1.1f%%',            # Automatically calculate and display percentages
+    startangle=140,               # Rotates the starting position for a cleaner look
+    textprops={'fontsize': 12, 'weight': 'bold'}  # Clean, bold font for readability
+)
+
+# Set the title
+plt.title('Student Grade Distribution (Pie Chart)', fontsize=14, fontweight='bold')
+
+# Save the circle chart as a PNG image inside your folder
+plt.savefig('grade_distribution_pie.png', dpi=300)
+plt.close()
+
+print("🎉 Success! Circle chart saved as 'grade_distribution_pie.png'")
 print("--------------------------")
 
 #Here see the index=False argument it is used to exclude the index column from being written to the Excel file. If you want to include the index in the output file, you can set index=True instead or dont use it.
